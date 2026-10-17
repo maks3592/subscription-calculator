@@ -1,5 +1,10 @@
-/* ---------- запуск ---------- */
-/* старт */
-movePill(); addEventListener('resize',movePill);
-document.fonts&&document.fonts.ready.then(movePill);
+/* ==========================================================================
+   main.js — запуск приложения (подключается последним)
+   ========================================================================== */
+
+movePill();
+addEventListener('resize', movePill);
+// шрифт Inter меняет ширину кнопок, поэтому после его загрузки позиция «таблетки» пересчитывается
+if (document.fonts) document.fonts.ready.then(movePill);
+
 renderCart();
