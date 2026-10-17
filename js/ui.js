@@ -1,13 +1,52 @@
-/* ---------- утилиты интерфейса ---------- */
-/* плавный счётчик */
-const raf=new WeakMap();
-function tween(el,to,f){
-  const from=+el.dataset.v||0; el.dataset.v=to; cancelAnimationFrame(raf.get(el));
-  const t0=performance.now(), d=650;
-  (function step(now){
-    const k=Math.min(1,(now-t0)/d), e=1-Math.pow(1-k,4);
-    el.textContent=f(from+(to-from)*e);
-    if(k<1)raf.set(el,requestAnimationFrame(step));
-  })(t0);
+/* ==========================================================================
+   ui.js — мелкие интерфейсные утилиты: анимированный счётчик и уведомления
+   ========================================================================== */
+
+/** Идентификаторы requestAnimationFrame для каждого счётчика. */
+const frames = new WeakMap();
+
+/**
+ * Плавно меняет число в элементе от прежнего значения к новому.
+ * @param {HTMLElement} el      элемент, в котором показывается сумма
+ * @param {number}      to      конечное значение
+ * @param {(v:number)=>string} format  как превратить число в текст
+ */
+function tween(el, to, format) {
+  const from = +el.dataset.v || 0;
+  el.dataset.v = to;
+  cancelAnimationFrame(frames.get(el));
+
+  const start = performance.now();
+  const duration = 650;
+
+  (function step(now) {
+    const k = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - k, 4); // easeOutQuart
+    el.textContent = format(from + (to - from) * eased);
+    if (k < 1) frames.set(el, requestAnimationFrame(step));
+  })(start);
 }
-let tt; function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1800)}
+
+let toastTimer;
+
+/** Показывает всплывающее уведомление на 1,8 секунды. */
+function toast(message) {
+  const el = $('#toast');
+  el.textContent = message;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 1800);
+}
+
+/**
+ * Если иконка не загрузилась (нет сети или сервис недоступен),
+ * вместо неё показывается первая буква названия.
+ * Событие error не всплывает, поэтому слушаем его на этапе перехвата.
+ */
+document.addEventListener('error', e => {
+  const img = e.target;
+  if (!(img instanceof HTMLImageElement) || !img.closest('.ico')) return;
+  const letter = document.createElement('b');
+  letter.textContent = img.dataset.letter || '';
+  img.replaceWith(letter);
+}, true);
