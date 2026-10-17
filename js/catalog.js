@@ -13,12 +13,22 @@ function iconHTML(service) {
   return `<div class="ico"><img src="${service.icon}" alt="" loading="lazy" referrerpolicy="no-referrer" class="${cls}" data-letter="${service.name[0]}"></div>`;
 }
 
+/** Блок «Входит в подписку» для сервисов с полем includes (например, Яндекс Плюс). */
+function includesHTML(service) {
+  if (!service.includes) return '';
+  const items = service.includes
+    .map(([name, domain]) => `<span><img src="${fav(domain)}" alt="" loading="lazy">${name}</span>`)
+    .join('');
+  return `<div class="incl"><div class="incl-t">Входит в подписку</div><div class="incl-l">${items}</div></div>`;
+}
+
 /** Разметка одной карточки; цены и кнопки заполняет renderCard. */
 function cardHTML(service, index) {
   const termButtons = TERMS.map(t => `<button data-t="${t}">${t} мес</button>`).join('');
   return `<article class="card" data-id="${service.id}" style="--i:${index}">
     <div class="top">${iconHTML(service)}<div><div class="name">${service.name}</div><div class="cat">${service.cat}</div></div></div>
     <div class="price"><span class="big"></span><span class="per">₽ / мес</span><span class="old"></span><span class="save"></span></div>
+    ${includesHTML(service)}
     <div class="seg" style="--k:0"><span class="thumb"></span>${termButtons}</div>
     <button class="add"></button>
   </article>`;

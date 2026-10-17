@@ -39,14 +39,20 @@ function toast(message) {
 }
 
 /**
- * Если иконка не загрузилась (нет сети или сервис недоступен),
- * вместо неё показывается первая буква названия.
+ * Если иконка не загрузилась (нет сети или сервис недоступен):
+ * у основной иконки показывается первая буква названия,
+ * а маленькая иконка в блоке «Входит в подписку» просто убирается.
  * Событие error не всплывает, поэтому слушаем его на этапе перехвата.
  */
 document.addEventListener('error', e => {
   const img = e.target;
-  if (!(img instanceof HTMLImageElement) || !img.closest('.ico')) return;
-  const letter = document.createElement('b');
-  letter.textContent = img.dataset.letter || '';
-  img.replaceWith(letter);
+  if (!(img instanceof HTMLImageElement)) return;
+
+  if (img.closest('.ico')) {
+    const letter = document.createElement('b');
+    letter.textContent = img.dataset.letter || '';
+    img.replaceWith(letter);
+  } else if (img.closest('.incl-l')) {
+    img.remove();
+  }
 }, true);
