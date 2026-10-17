@@ -1,12 +1,7 @@
-/* ==========================================================================
-   cart.js — корзина: список, смена срока, удаление и итоговые суммы
-   ========================================================================== */
-
 const ICON_REMOVE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 
 const itemsEl = $('#items');
 
-/** Разметка одной строки корзины. */
 function lineHTML(service, term) {
   const termButtons = TERMS
     .map(t => `<button data-t="${t}" class="${t === term ? 'on' : ''}">${t} мес</button>`)
@@ -17,11 +12,9 @@ function lineHTML(service, term) {
     <button class="rm" aria-label="Удалить">${ICON_REMOVE}</button></div>`;
 }
 
-/** Перерисовывает корзину целиком: строки, суммы, счётчик и состояние кнопок. */
 function renderCart() {
   const ids = Object.keys(cart);
 
-  // убираем строки сервисов, которых в корзине уже нет (кроме тех, что играют анимацию ухода)
   [...itemsEl.children].forEach(row => {
     if (!cart[row.dataset.id] && !row.classList.contains('leave')) row.remove();
   });
@@ -37,7 +30,6 @@ function renderCart() {
       row.dataset.id = id;
       row.innerHTML = `<div>${lineHTML(service, term)}</div>`;
       itemsEl.appendChild(row);
-      // два кадра подряд, чтобы браузер успел применить начальное состояние анимации
       requestAnimationFrame(() => requestAnimationFrame(() => row.classList.remove('enter')));
     } else {
       row.querySelectorAll('.mini button').forEach(b => b.classList.toggle('on', +b.dataset.t === term));
@@ -62,7 +54,7 @@ function renderCart() {
     if (+badge.textContent !== count) {
       badge.textContent = count;
       badge.classList.remove('bump');
-      void badge.offsetWidth; // перезапуск анимации
+      void badge.offsetWidth;
       badge.classList.add('bump');
     }
   });
@@ -74,7 +66,6 @@ function renderCart() {
   cards.forEach(renderCard);
 }
 
-/** Удаляет сервис из корзины с анимацией ухода строки. */
 function removeFromCart(id) {
   delete cart[id];
   save();
@@ -85,8 +76,6 @@ function removeFromCart(id) {
   }
   renderCart();
 }
-
-/* ---------- события корзины ---------- */
 
 itemsEl.addEventListener('click', e => {
   const line = e.target.closest('.line');

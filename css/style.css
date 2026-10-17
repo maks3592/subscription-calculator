@@ -1,7 +1,3 @@
-/* ==========================================================================
-   style.css — монохромная тема, карточки, корзина, адаптивность
-   ========================================================================== */
-
 :root{
   --bg:#050505; --bg2:#0b0b0c; --card:#111113; --card2:#161618;
   --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.16);
@@ -16,12 +12,12 @@ body{
   background:var(--bg);color:var(--text);min-height:100vh;
   -webkit-font-smoothing:antialiased;overflow-x:hidden;
 }
-body::before{ /* мягкое белое свечение сверху */
+body::before{
   content:"";position:fixed;inset:-20% 0 auto 0;height:70vh;pointer-events:none;z-index:0;
   background:radial-gradient(60% 60% at 50% 0%,rgba(255,255,255,.10),transparent 70%);
   animation:breathe 9s ease-in-out infinite alternate;
 }
-body::after{ /* зерно-сетка */
+body::after{
   content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
   background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
   background-size:64px 64px;
@@ -32,7 +28,6 @@ body::after{ /* зерно-сетка */
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .wrap{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 20px 80px}
 
-/* ---------- hero ---------- */
 header{padding:72px 0 40px;text-align:center}
 .eyebrow{
   display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border:1px solid var(--line2);
@@ -49,7 +44,6 @@ header p{margin:16px auto 0;max-width:520px;color:var(--muted);font-size:16.5px;
 .rise{opacity:0;transform:translateY(18px);animation:rise .9s var(--ease) forwards}
 @keyframes rise{to{opacity:1;transform:none}}
 
-/* ---------- layout ---------- */
 .layout{display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start}
 .tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px;align-items:center}
 .chips{position:relative;display:flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:999px;background:var(--bg2);overflow-x:auto;scrollbar-width:none;max-width:100%}
@@ -67,7 +61,6 @@ header p{margin:16px auto 0;max-width:520px;color:var(--muted);font-size:16.5px;
 .search input{flex:1;background:none;border:0;outline:0;color:var(--text);font:inherit;font-size:14.5px;min-width:0}
 .search input::placeholder{color:var(--dim)}
 
-/* ---------- cards ---------- */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
 .card{
   --mx:50%;--my:0%;
@@ -123,7 +116,7 @@ header p{margin:16px auto 0;max-width:520px;color:var(--muted);font-size:16.5px;
 }
 .add:hover{transform:translateY(-1px);box-shadow:0 10px 30px -10px rgba(255,255,255,.55)}
 .add:active{transform:scale(.97)}
-.add::after{ /* блик */
+.add::after{
   content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;transform:skewX(-20deg);
   background:linear-gradient(90deg,transparent,rgba(0,0,0,.14),transparent);transition:left .8s var(--ease);
 }
@@ -134,7 +127,6 @@ header p{margin:16px auto 0;max-width:520px;color:var(--muted);font-size:16.5px;
 .empty{display:none;text-align:center;color:var(--muted);padding:70px 0}
 .empty.show{display:block;animation:rise .6s var(--ease) both}
 
-/* ---------- cart ---------- */
 aside{position:sticky;top:20px}
 .cart{
   border:1px solid var(--line2);border-radius:26px;background:linear-gradient(180deg,#121214,#0a0a0b);padding:22px;

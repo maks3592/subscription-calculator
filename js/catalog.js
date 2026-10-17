@@ -1,19 +1,13 @@
-/* ==========================================================================
-   catalog.js — карточки сервисов, поиск и фильтр по категориям
-   ========================================================================== */
-
 const ICON_PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
 const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7"/></svg>';
 
 const grid = $('#grid');
 
-/** Разметка иконки сервиса; запасной вариант (буква) подставляется в ui.js. */
 function iconHTML(service) {
   const cls = service.isFav ? 'fav' : '';
   return `<div class="ico"><img src="${service.icon}" alt="" loading="lazy" referrerpolicy="no-referrer" class="${cls}" data-letter="${service.name[0]}"></div>`;
 }
 
-/** Блок «Входит в подписку» для сервисов с полем includes (например, Яндекс Плюс). */
 function includesHTML(service) {
   if (!service.includes) return '';
   const items = service.includes
@@ -22,7 +16,6 @@ function includesHTML(service) {
   return `<div class="incl"><div class="incl-t">Входит в подписку</div><div class="incl-l">${items}</div></div>`;
 }
 
-/** Разметка одной карточки; цены и кнопки заполняет renderCard. */
 function cardHTML(service, index) {
   const termButtons = TERMS.map(t => `<button data-t="${t}">${t} мес</button>`).join('');
   return `<article class="card" data-id="${service.id}" style="--i:${index}">
@@ -41,7 +34,6 @@ grid.innerHTML = SERVICES.map((service, i) => {
 
 const cards = [...grid.children];
 
-/** Обновляет цену, скидку, переключатель срока и кнопку на одной карточке. */
 function renderCard(card) {
   const service = SERVICES.find(s => s.id === card.dataset.id);
   const term = cardTerm[service.id];
@@ -74,8 +66,6 @@ function renderCard(card) {
 
 cards.forEach(renderCard);
 
-/* ---------- события карточек ---------- */
-
 grid.addEventListener('click', e => {
   const card = e.target.closest('.card');
   if (!card) return;
@@ -100,7 +90,6 @@ grid.addEventListener('click', e => {
   }
 });
 
-/** Подсветка карточки следует за курсором (значения читает CSS). */
 grid.addEventListener('pointermove', e => {
   const card = e.target.closest('.card');
   if (!card) return;
@@ -108,8 +97,6 @@ grid.addEventListener('pointermove', e => {
   card.style.setProperty('--mx', e.clientX - rect.left + 'px');
   card.style.setProperty('--my', e.clientY - rect.top + 'px');
 });
-
-/* ---------- фильтры ---------- */
 
 const chips = $('#chips');
 const pill = chips.querySelector('.pill');
@@ -121,7 +108,6 @@ CATS.forEach(category => {
   chips.appendChild(chip);
 });
 
-/** Двигает белую «таблетку» под активную категорию. */
 function movePill() {
   const active = chips.querySelector('.chip.on');
   pill.style.width = active.offsetWidth + 'px';
@@ -139,7 +125,6 @@ chips.addEventListener('click', e => {
 
 $('#q').addEventListener('input', applyFilter);
 
-/** Показывает только карточки, подходящие под категорию и строку поиска. */
 function applyFilter() {
   const query = $('#q').value.trim().toLowerCase();
   let visible = 0;
@@ -154,7 +139,6 @@ function applyFilter() {
       return;
     }
     if (card.classList.contains('hide')) {
-      // заново запускаем анимацию появления
       card.classList.remove('hide');
       card.style.animation = 'none';
       void card.offsetHeight;
